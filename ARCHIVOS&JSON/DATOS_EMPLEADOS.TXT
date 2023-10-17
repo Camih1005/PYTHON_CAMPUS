@@ -1,0 +1,6 @@
+ID,NOMBRE,EDAD,SEXO,TELEFONO
+12,Hader Yobany Cabrera Guarin,20,M,3125143834
+12,JUan Carlos Cardenas Gonzales,30,M,3123132547
+14,David Perez Juan Mauricio,25,M,3157894568
+15,JUan Carlos Cardenas Gonzales,30,M,3223132547
+16,David Perez Juan Mauricio,25,M,3187894568

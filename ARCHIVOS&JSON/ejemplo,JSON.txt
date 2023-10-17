@@ -1,0 +1,14 @@
+import json
+
+fd = open(fd = open("/home/spukN01-/Documents/CCamilo/LoAprendido/ArchivosAprendido/mbox-short.txt","r"))
+
+lst = []
+
+lst = json.load(fd)
+
+for e in lst:
+    print(f"Nombre: {e['nombre']}")
+    print(f"Edad: {e['edad']}")
+    print("-" * 30)
+
+fd.close()
