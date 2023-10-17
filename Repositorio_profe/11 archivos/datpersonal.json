@@ -1,0 +1,4 @@
+[
+    { "1": { "nombre": "carlos", "edad": 25, "sexo": "M", "telefono": "123" } },
+    { "3": { "nombre": "Daniela", "edad": 20, "sexo": "F", "telefono": "789" } }
+]
