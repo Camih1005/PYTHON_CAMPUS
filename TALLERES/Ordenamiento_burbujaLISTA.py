@@ -10,7 +10,7 @@ def ordenamiento_burbuja(lst):
 
 
 productos = {
-    1 : {
+    3 : {
         "nombre":"pantalon",
         "precio": 125,
         "cantidad": 5
