@@ -171,7 +171,7 @@ lstPersonal =cargarInfo(lstPersonal, rutaFile)
 while True:
     op = menu()
     if op == 1:
-        agregarPersonal(lstPersonal, rutaFile)
+        agregarPersonal()
     elif op == 2:
         # Modificar
         pass
