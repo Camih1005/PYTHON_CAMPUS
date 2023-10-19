@@ -1,4 +1,4 @@
-# Solicitar al usuario el nombre del archivo
+# Solicitar al sddusdduario el nombre del archivo
 nombre_archivo = input("Ingrese el nombre del archivo: ")
 
 try:
