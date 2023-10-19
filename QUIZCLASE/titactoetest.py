@@ -1,4 +1,5 @@
 import json
+import time
 
 def existeNom(Nombre, lstjugadores):
     #funcion que encuentra la posición de un codigo en la lista
@@ -18,12 +19,11 @@ def existeNom(Nombre, lstjugadores):
         
 def verificar_victoria(triki, linea):
     for i in range(3):
-        # Verificar filas y columnas
+
         if triki[i][0] == triki[i][1] == triki[i][2] == linea or \
            triki[0][i] == triki[1][i] == triki[2][i] == linea:
             return True
 
-    # Verificar diagonales
     if triki[0][0] == triki[1][1] == triki[2][2] == linea or \
        triki[0][2] == triki[1][1] == triki[2][0] == linea:
         return True
@@ -65,33 +65,6 @@ def imprimir_tablero(Juego):
     for i in Juego:
         print(" | ".join(i))
         print("-" *9)
-        
-    
-    
-def CreandosotwareJuego():
-    pass
-
-def agregarNOM(lstjugadores, rutaFile):
-    print("\n\n1. Agregar Libro")
-    
-    nombre = int(input("Ingrese el codigo: "))
-    while existeNom(nombre, lstjugadores) != -1:
-        # si existeId es -1 entonces no existe ese codigo en lstLibros
-        # si es diferente a -1, entonces el codigo y existe.
-        print("--> Ya existe un libro con ese ID")
-        input("Presione cualquier tecla para continuar\n")
-        nombre = input("\nIngrese el nombre: ")
-
-    nombre = input("nombre: ")
-    
-    dicjugadores = {}
-    dicjugadores[nombre] = {"nombre":nombre}
-    lstjugadores.append(dicjugadores)
-    
-    if guardarnombre(lstjugadores, rutaFile) == True:
-        input("El jugador ha sido registrado con éxito.\nPresione cualquier tecla para continuar...")
-    else:
-        input("Ocurrio algún error al guardar el jugador.")            
 
 def Crearjuego():
     return [[" " for _ in range(3)] for _ in range(3)]     
@@ -116,28 +89,36 @@ def ImprTablaPocisiones():
     else:
         print("La tabla de posiciones está vacía.")  
             
-def TablaDePosiciones():
+def TablaDePosiciones(rutaFile):
     try:
         with open(rutaFile, "r") as file:
             return json.load(file)
     except FileNotFoundError:
         return []  
             
-rutaFile = "QUIZCLASE"
+rutaFile = "QUIZCLASE/Pocisionesjugadores.json"
 lstjugadores = []
 lstjugadores =(lstjugadores, rutaFile)
 def juego_tic_tac_toe():
     print("°°°°°°°°°°°°°°°°JUEGO DE TIK TAC TOE°°°°°°°°°°°°°°°°°°°")
     print("°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°\n\tESPERO QUE DISFRUTEN EL MEJOR JUEGO\n")
     print("XOXOXOXOXOXOXOXOXOXOXOXOXOXOXOXOXOXOXOXOXOXOXOXOXOXOXOXO")
+    tiempo1 = 0    
+    tiempo2 = 0
     while True:
         opcion = input("\n\t1. Jugar TIC TAC TOE\n\t2. Ver Tabla de Posiciones de jugadores\n\t3. Salir\n\tElija una opcion del 1 al 3:  ")
 
         if opcion == "1":
+            empiezo = time.time()
             jugador1 = Jugar1()
+            final = time.time()
+            empiezo2 = time.time()
             jugador2 = Jugar1()
+            final2 = time.time()
             tablero = Crearjuego()
             turno = 1
+            tiempo1 = tiempo1 + (final-empiezo)
+            tiempo2 = tiempo2 + (final2-empiezo2)
 
             while True:
                 if turno % 2 == 1:
@@ -162,7 +143,9 @@ def juego_tic_tac_toe():
                 if verificar_victoria(tablero, marca):
                     imprimir_tablero(tablero)
                     print(f"¡{ActualJugador} ({marca}) Es el ganador!")
+                    print(f"{jugador1} se tardo {tiempo1} ")                 
                     break
+
 
                 if turno == 9:
                     imprimir_tablero(tablero)
@@ -171,8 +154,8 @@ def juego_tic_tac_toe():
 
                 turno += 1
             # Actualizar la tabla de posiciones
-            tabla_posiciones = TablaDePosiciones()
-            for jugador in tabla_posiciones:
+            ImprTablaPocisiones = TablaDePosiciones()
+            for jugador in ImprTablaPocisiones:
                 if jugador['nombre'] == ActualJugador:
                     if marca == 'X':
                         jugador['victorias'] += 1
@@ -181,10 +164,11 @@ def juego_tic_tac_toe():
                     break
             else:
                 if marca == 'X':
-                    tabla_posiciones.append({'nombre': ActualJugador, 'victorias': 1, 'derrotas': 0})
+                    ImprTablaPocisiones.append({'nombre': ActualJugador, 'victorias': 1, 'derrotas': 0})
                 else:
-                    tabla_posiciones.append({'nombre': ActualJugador, 'victorias': 0, 'derrotas': 1})
-            tabla_posiciones(tabla_posiciones)
+                    ImprTablaPocisiones.append({'nombre': ActualJugador, 'victorias': 0, 'derrotas': 1})
+            ImprTablaPocisiones(ImprTablaPocisiones)
+
             
         elif opcion == "2":
             ImprTablaPocisiones()
