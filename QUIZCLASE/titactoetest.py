@@ -1,20 +1,6 @@
 import json
 import time
 
-def existeNom(Nombre, lstjugadores):
-    #funcion que encuentra la posición de un codigo en la lista
-    # Devuelve un número enterior >= 0 si el codigo existe
-    # Devuelve un -1 si el codigo NO existe
-    for i, datos in enumerate(lstjugadores):
-        # El método enumerate () agrega un contador a un iterable y 
-        # lo devuelve en forma de objeto de enumeración. 
-        # Este objeto enumerado puede usarse directamente para bucles 
-        # o convertirse en una lista de tuplas usando la función list().
-        k = list(datos.keys())[0]
-        if k == Nombre:
-            return i
-    return -1
-
             
         
 def verificar_victoria(triki, linea):
@@ -61,9 +47,9 @@ def guardarnombre(lstjugadores, rutaFile):
     
     return True
 
-def imprimir_tablero(Juego):
-    for i in Juego:
-        print(" | ".join(i))
+def imprimir_tablero(tablero):
+    for i in tablero:
+        print(" l ".join(i))
         print("-" *9)
 
 def Crearjuego():
@@ -72,7 +58,7 @@ def Crearjuego():
 def Jugar1():
     while True:
         try:
-            jugador = input("\tIngrese el nombre del jugador : ")
+            jugador = input("\tIngrese el nombre del jugador 1 : ")
             if not jugador.isalnum():
                 print("Nombre inválido. Debe contener solo caracteres alfanuméricos.")
             else:
@@ -80,8 +66,8 @@ def Jugar1():
         except Exception as e:
             print("Error al ingresar el nombre.", e) 
 
-def ImprTablaPocisiones():
-    tabla = TablaDePosiciones()
+def ImprTablaPocisiones(lstjugadores,rutaFile):
+    tabla = cargarJug(lstjugadores,rutaFile)
     if tabla:
         print("\nTabla de Posiciones:")
         for i, jugador in enumerate(tabla, start=1):
@@ -89,17 +75,57 @@ def ImprTablaPocisiones():
     else:
         print("La tabla de posiciones está vacía.")  
             
-def TablaDePosiciones(rutaFile):
+    
+
+def guardarJugadores(lstjugadores,rutaFile):    
     try:
-        with open(rutaFile, "r") as file:
-            return json.load(file)
-    except FileNotFoundError:
-        return []  
-            
-rutaFile = "QUIZCLASE/Pocisionesjugadores.json"
-lstjugadores = []
-lstjugadores =(lstjugadores, rutaFile)
+        fd = open(rutaFile, "w")
+    except Exception as e:
+        print("Error al guardar la información\n", e)
+        return None
+    try:
+        lstjugadores = json.dump(lstjugadores,fd)
+    except Exception as e:
+        print("Error al guardar la información\n", e)
+    fd.close()
+    return True
+        
+def cargarJug(lstjugadores, rutaFile):
+    try:
+        fd = open(rutaFile, "r")
+    except Exception as e:
+        try:
+            fd = open(rutaFile, "w")
+        except Exception as d:
+            print("Error al intentar abrir el archivo\n", d)
+            fd.close()
+            input("Presione cualquier tecla para continuar\n")
+            return None
+    try:
+        fd = open(rutaFile, "r")
+        linea = fd.readline()
+        if linea.strip() != "":
+            fd.seek(0)
+            lstjugadores = json.load(fd)
+        else:
+            lstjugadores = []
+    except Exception as e:
+        print("Error al cargar la información\n", e)
+        input("Presione cualquier tecla para continuar\n")
+        return None
+    fd.close()
+    return lstjugadores
+
+
 def juego_tic_tac_toe():
+    
+    rutaFile = "QUIZCLASE/Pocisionesjugadores.json"
+    lstjugadores = []
+    lstjugador = []
+    lstjugadores =cargarJug(lstjugadores, rutaFile)
+
+
+
     print("°°°°°°°°°°°°°°°°JUEGO DE TIK TAC TOE°°°°°°°°°°°°°°°°°°°")
     print("°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°\n\tESPERO QUE DISFRUTEN EL MEJOR JUEGO\n")
     print("XOXOXOXOXOXOXOXOXOXOXOXOXOXOXOXOXOXOXOXOXOXOXOXOXOXOXOXO")
@@ -129,7 +155,7 @@ def juego_tic_tac_toe():
                     marca = 'O'
 
                 imprimir_tablero(tablero)
-                print(f"Turno de {ActualJugador} ({marca})")
+                print(f"Turno de {ActualJugador} (con la {marca})")
     
                 fila = int(input("Ingrese la fila (1, 2, 3): "))
                 columna = int(input("Ingrese la columna (1, 2, 3): "))
@@ -143,7 +169,11 @@ def juego_tic_tac_toe():
                 if verificar_victoria(tablero, marca):
                     imprimir_tablero(tablero)
                     print(f"¡{ActualJugador} ({marca}) Es el ganador!")
-                    print(f"{jugador1} se tardo {tiempo1} ")                 
+                    lstjugador.append(ActualJugador)
+                    lstjugador.append(marca)
+                    lstjugadores.append(lstjugador)
+                    guardarJugadores(lstjugadores,rutaFile)
+                    print(f"{jugador1} se tardo {tiempo1:,.3f} ")                 
                     break
 
 
@@ -154,9 +184,9 @@ def juego_tic_tac_toe():
 
                 turno += 1
             # Actualizar la tabla de posiciones
-            ImprTablaPocisiones = TablaDePosiciones()
-            for jugador in ImprTablaPocisiones:
-                if jugador['nombre'] == ActualJugador:
+            TablaPoci = cargarJug(lstjugadores,rutaFile)
+            for jugador in TablaPoci:
+                if jugador[0] == ActualJugador:
                     if marca == 'X':
                         jugador['victorias'] += 1
                     else:
@@ -164,14 +194,14 @@ def juego_tic_tac_toe():
                     break
             else:
                 if marca == 'X':
-                    ImprTablaPocisiones.append({'nombre': ActualJugador, 'victorias': 1, 'derrotas': 0})
+                    TablaPoci.append({'nombre': ActualJugador, 'victorias': 1, 'derrotas': 0})
                 else:
-                    ImprTablaPocisiones.append({'nombre': ActualJugador, 'victorias': 0, 'derrotas': 1})
-            ImprTablaPocisiones(ImprTablaPocisiones)
+                    TablaPoci.append({'nombre': ActualJugador, 'victorias': 0, 'derrotas': 1})
+            guardarJugadores(TablaPoci)
 
             
         elif opcion == "2":
-            ImprTablaPocisiones()
+            ImprTablaPocisiones(lstjugadores,rutaFile)
 
         elif opcion == "3":
             print("¡Gracias por jugar!")
@@ -180,6 +210,5 @@ def juego_tic_tac_toe():
         else:
             print("Opción no válida. Elija una opción válida del 1 al 3.")
 
-if __name__ == "__main__":
-    juego_tic_tac_toe()
-    print()
+
+juego_tic_tac_toe()
